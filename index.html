@@ -1,0 +1,482 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2728%27 fill=%27%2332645f%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2712%27 fill=%27%23b5f5df%27/%3E%3C/svg%3E"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#102c39"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap"><title>El bosque luminoso · Mundo ilustrado</title><style>*{box-sizing:border-box}body{margin:0;background:#102c39;color:#eefaf5;font:14px system-ui;overflow:hidden}canvas{display:block;touch-action:none;width:100vw;height:100vh;height:100dvh}header{position:fixed;top:26px;left:30px;pointer-events:none;text-shadow:0 2px 15px #142a35}small{letter-spacing:4px;color:#a7e6df}h1{font:34px Georgia;margin:8px 0}header p{line-height:1.6;margin:0;color:#d6eeee}.panel{position:fixed;right:20px;top:20px;background:#0e2837cc;backdrop-filter:blur(16px);border:1px solid #a7d5d230;border-radius:18px;padding:16px;width:215px}button,select{background:#264b58;color:#ecfffa;border:1px solid #8dc3bf40;border-radius:8px;padding:10px;cursor:pointer;margin:3px}button:hover{background:#3b6a73}select{width:100%}.panel h3{font:20px Georgia;margin:0 0 12px}.panel label{display:block;padding:4px 0}.bottom{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#102a37dd;border:1px solid #8dc3bf40;border-radius:16px;padding:12px 20px;text-align:center;max-width:90%;width:max-content}#where{color:#b5f5df;font-size:16px;margin-bottom:5px}.help{font-size:12px;color:#c4d9dd;line-height:1.7}.pad{position:fixed;bottom:22px;left:22px;display:grid;grid-template-columns:repeat(3,42px)}.pad button{padding:13px 5px}#load{position:fixed;inset:0;display:grid;place-content:center;text-align:center;background:#102c39;z-index:5;font:23px Georgia}#load p{font:14px system-ui;color:#a1d8cf}.dot{position:fixed;left:50%;top:50%;pointer-events:none;opacity:.5}details{max-height:45vh;overflow:auto}summary{cursor:pointer;padding:10px 0}@media(max-width:700px){header{left:14px;top:14px}h1{font-size:25px}header p{display:none}.panel{right:10px;top:90px;width:175px;padding:10px}.bottom{right:10px;left:auto;transform:none;bottom:12px;max-width:calc(100% - 155px);padding:10px}.help{font-size:10px}.pad{left:9px;bottom:12px}}
+#journey-choice,#journey-end{position:fixed;inset:0;z-index:8;display:grid;place-items:center;background:radial-gradient(ellipse at center,#183b3dcc,#071a25eF);backdrop-filter:blur(5px);padding:22px}
+#journey-choice .choice-card,#journey-end .choice-card{width:min(560px,94vw);padding:34px 30px;border:1px solid #b8e8d866;border-radius:22px;background:linear-gradient(145deg,#183b3bea,#102a35f2);box-shadow:0 24px 90px #0009;text-align:center}
+#journey-choice h2,#journey-end h2{font:30px Georgia;margin:0 0 12px;color:#e8fff5}
+#journey-choice p,#journey-end p{color:#c5e5dc;line-height:1.65;margin:0 auto 22px;max-width:440px}
+#journey-choice .choices,#journey-end .choices{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#journey-choice button,#journey-end button{min-width:190px;padding:14px 18px;font:16px Georgia;border-radius:12px;background:#32645f;border:1px solid #b8e8d888}
+#journey-choice button:first-child,#journey-end button:first-child{background:linear-gradient(135deg,#397a6a,#285a58)}
+#tour-caption{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:4;padding:10px 18px;border-radius:30px;background:#0b2638c9;border:1px solid #b8e8d855;color:#e8fff5;font:15px Georgia;display:none;pointer-events:none;white-space:nowrap}
+@media(max-width:600px){#journey-choice .choice-card,#journey-end .choice-card{padding:26px 18px}#journey-choice h2,#journey-end h2{font-size:25px}#journey-choice .choices,#journey-end .choices{flex-direction:column}#journey-choice button,#journey-end button{width:100%}#tour-caption{top:10px;font-size:13px}}
+
+/* ---- Pantalla limpia y adaptable: solo queda el título de arriba a la izquierda ---- */
+html,body{height:100%;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{position:fixed;inset:0;width:100%}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.panel,.bottom,.pad,.dot,#tour-caption{display:none!important}
+header{top:max(26px,env(safe-area-inset-top));left:max(30px,env(safe-area-inset-left))}
+#journey-choice,#journey-end{-webkit-backdrop-filter:blur(5px);overflow:auto;-webkit-overflow-scrolling:touch}
+#journey-choice .choice-card,#journey-end .choice-card{margin:auto}
+#crypt-q{position:fixed;left:0;right:0;bottom:max(9%,env(safe-area-inset-bottom));z-index:7;display:flex;justify-content:center;padding:0 5vw;pointer-events:none;opacity:0;transition:opacity 1.3s ease}
+#crypt-q.on{opacity:1}
+#crypt-q span{display:block;max-width:min(92vw,880px);text-align:center;padding:.9em 1.4em;border-radius:28px;background:radial-gradient(ellipse at center,#0a1c25b8 0%,#0a1c2570 60%,#0a1c2500 100%);font:700 clamp(19px,3.6vw,42px)/1.35 'Cinzel Decorative','Cinzel','Trajan Pro',Georgia,'Times New Roman',serif;letter-spacing:.04em;color:#fff2cf;text-shadow:0 0 14px #ffc860,0 0 34px #ff9d2e99,0 2px 3px #000a}
+#bye{position:fixed;inset:0;z-index:20;display:none;place-items:center;background:#071a25;text-align:center;padding:24px}
+#bye h2{font:400 clamp(22px,5vw,34px)/1.3 'Cinzel Decorative',Georgia,serif;color:#fff2cf;text-shadow:0 0 18px #ffc86088;margin:0 0 20px}
+#bye button{min-width:190px;padding:14px 18px;font:16px Georgia;border-radius:12px;background:#32645f;border:1px solid #b8e8d888}
+@media(max-width:640px),(max-height:520px){header{display:none}}
+@media(max-height:520px){#journey-choice,#journey-end{padding:10px}#journey-choice .choice-card,#journey-end .choice-card{padding:16px 22px}#journey-choice h2,#journey-end h2{font-size:21px;margin-bottom:6px}#journey-choice p,#journey-end p{font-size:13px;line-height:1.45;margin-bottom:12px}#journey-choice button,#journey-end button{padding:10px 14px;min-width:160px}#crypt-q{bottom:6%}}
+</style><canvas id="world" aria-label="Bosque ilustrado navegable"></canvas><header><small>UN MUNDO POR EXPLORAR</small><h1>El bosque luminoso</h1><p>Un bosque extenso de musgo, raíces y luz.<br>Explora senderos, lagunas y jardines bajo otro planeta.</p></header><div class="panel"><h3>Tu expedición</h3><p class="help">Sigue el camino principal o elige una bifurcación. Los bordes te mantienen en el sendero.</p><button id="reset">Volver al inicio</button><button id="motion">Animación: sí</button><details><summary>Capas del paisaje</summary><div id="layers"></div></details><button id="full">Pantalla completa</button></div><div id="tour-caption">Un paseo entre los secretos del bosque</div>
+<div id="crypt-q" role="status" aria-live="polite"><span>¿Te gustaría entrar en la Cripta del Árbol Luminoso?</span></div><div id="bye"><div><h2>Gracias por visitar<br>El bosque luminoso</h2><button id="reenter">Volver a entrar</button></div></div>
+<div id="journey-choice"><div class="choice-card"><small>EL BOSQUE LUMINOSO</small><h2>Un paseo por el bosque</h2><p>Sube a bordo de una pequeña nave exploradora y descubre cristales, lagunas y rincones secretos hasta llegar al árbol luminoso. El trayecto dura menos de tres minutos.</p><div class="choices"><button id="start-tour">Recorrido turístico</button><button id="start-manual" style="display:none">Recorrido manual</button></div></div></div><div id="journey-end" style="display:none"><div class="choice-card"><small>EL BOSQUE LUMINOSO</small><h2>Fin del trayecto</h2><p>Has llegado al árbol luminoso, el corazón del bosque. ¿Quieres volver a recorrerlo? Sus habitantes estarán esta vez en otros lugares.</p><div class="choices"><button id="again">Volver a hacer el trayecto</button><button id="exit">Salir</button></div></div></div><div class="dot">·</div><div class="bottom"><div id="where">Entrada del bosque</div><div id="path-status" class="help">Recorre el sendero</div><div class="help">Flechas / WASD: caminar · Arrastrar ratón: mirar<br>Mantén pulsado el ratón: avanzar · Rueda: avanzar / retroceder<br>Q / E: girar · Mayús: acelerar</div></div><div class="pad"><span></span><button data-key="ArrowUp" aria-label="Avanzar">▲</button><span></span><button data-key="ArrowLeft" aria-label="Izquierda">◀</button><button data-key="ArrowDown" aria-label="Retroceder">▼</button><button data-key="ArrowRight" aria-label="Derecha">▶</button></div><div id="load">Preparando tu bosque…<p id="progress">Cargando ilustraciones</p></div><script>;(async()=>{
+const ASSETS={"sprite":"assets/sprite.webp","trail-earth":"assets/trail-earth.webp","soil":"assets/soil.webp","cliff":"assets/cliff.webp","tree-gold":"assets/tree-gold.webp","tree":"assets/tree.webp","tree-old":"assets/tree-old.webp","plant":"assets/plant.webp","flower-blue":"assets/flower-blue.webp","flower-purple":"assets/flower-purple.webp","crystal":"assets/crystal.webp","lake":"assets/lake.webp","mountain":"assets/mountain.webp","rock":"assets/rock.webp","platform":"assets/platform.webp","planet":"assets/planet.webp","vine":"assets/vine.webp","sky":"assets/sky.webp","bird":"assets/bird.webp","felino":"assets/felino.webp","felino-espalda":"assets/felino-espalda.webp","horizon-lake":"assets/horizon-lake.webp"};
+const canvas=document.querySelector('#world'),ctx=canvas.getContext('2d',{alpha:false});let W,H,F;const coarse=matchMedia('(pointer:coarse)').matches;let quality=coarse?.8:1,gameClosed=false;
+function resize(){const vw=Math.max(1,document.documentElement.clientWidth||innerWidth),vh=Math.max(1,window.innerHeight||document.documentElement.clientHeight),dpr=Math.min(devicePixelRatio||1,coarse?1.25:1.5)*quality;W=canvas.width=Math.round(vw*dpr);H=canvas.height=Math.round(vh*dpr);F=.78*Math.max(W,H*.9)}resize();
+{let rt=0;const again=()=>{cancelAnimationFrame(rt);rt=requestAnimationFrame(resize)};addEventListener('resize',again);addEventListener('orientationchange',()=>setTimeout(again,250));window.visualViewport&&visualViewport.addEventListener('resize',again)}
+const names=['sprite','trail-earth','soil','cliff','tree-gold','tree','tree-old','plant','flower-blue','flower-purple','crystal','lake','mountain','rock','platform','planet','vine','sky','bird','felino','felino-espalda','horizon-lake'],images={},failed=[];let loaded=0;await Promise.all(names.map(n=>new Promise((ok,no)=>{const im=new Image();im.onload=()=>{images[n]=im;document.querySelector('#progress').textContent=`${++loaded} / ${names.length} ilustraciones`;ok()};im.onerror=()=>{failed.push(ASSETS[n]);ok()};im.src=ASSETS[n]})));if(failed.length)throw Object.assign(Error('assets'),{userMessage:'No se encuentran estas imágenes: '+failed.join(', ')+'. Comprueba que la carpeta assets está junto a index.html.'});document.querySelector('#load').remove();
+const layers={Árboles:true,Plantas:true,Cristales:true,Agua:true,Rocas:true,Montañas:true,Planeta:true,Lianas:true,Fauna:true,Aves:true,Burbujas:true,Felinos:true};for(const name in layers){const l=document.createElement('label'),i=document.createElement('input');i.type='checkbox';i.checked=true;i.onchange=()=>layers[name]=i.checked;l.append(i,' '+name);document.querySelector('#layers').append(l)}
+let seed=3426;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};const objects=[];function add(n,x,z,w,h,layer,y=null){if(y===null)y=layer==='Árboles'?-1.25:0;objects.push({n,x,z,w,h,layer,y,phase:rand()*6.28})}
+// Connected walks: lagoon shore, crystal garden, tree clearing and outer woodland loop.
+const routes=[[[0,200],[0,46],[0,32],[0,27],[0,-43],[0,-93],[0,-210]],[[0,32],[-12,20],[-13,2],[-7,-20],[0,-43]],[[0,27],[14,20],[30,5],[47,-8],[53,-34],[35,-48],[10,-46],[0,-43]],[[47,-8],[74,-20],[91,-47],[95,-86],[72,-111],[32,-115],[0,-93],[0,-80]],[[0,90],[-30,113],[-68,93],[-90,51],[-86,12],[-66,-2],[-48,10],[-13,2]],[[0,-93],[-31,-115],[-82,-104],[-112,-74],[-116,-22],[-90,51]],[[0,135],[40,158],[99,140],[126,89],[119,36],[91,-47]]];
+const trails=[];for(const route of routes)for(let i=1;i<route.length;i++){const a=route[i-1],b=route[i],length=Math.hypot(b[0]-a[0],b[1]-a[1]),steps=Math.ceil(length/5);for(let j=0;j<steps;j++){const t=(j+.5)/steps;trails.push({x:a[0]+(b[0]-a[0])*t,z:a[1]+(b[1]-a[1])*t,w:4.7,d:length/steps+.35,angle:Math.atan2(b[0]-a[0],b[1]-a[1])})}}
+// The collision network is built from exactly the same route points as the visible trails.
+const segments=routes.flatMap(route=>route.slice(1).map((b,i)=>({a:route[i],b})));
+const pathRadius=1.8;
+function closestPath(x,z){let best={distance:Infinity,x:0,z:46};for(const {a,b} of segments){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz))),px=a[0]+dx*t,pz=a[1]+dz*t,distance=Math.hypot(x-px,z-pz);if(distance<best.distance)best={distance,x:px,z:pz}}return best}
+function confineToPath(x,z){const near=closestPath(x,z);if(near.distance<=pathRadius)return {x,z,blocked:false};const scale=pathRadius/near.distance;return {x:near.x+(x-near.x)*scale,z:near.z+(z-near.z)*scale,blocked:true}}
+let boundaryUntil=0;
+// Scenic, non-interruptible guided route: lagoon, enchanted woodland, crystal garden and golden tree.
+const tourWaypoints=[[0,46],[0,27],[14,20],[30,5],[47,-8],[53,-34],[35,-48],[10,-46],[0,-43],[-6,-26],[-20,-20],[-32,-14],[-24,-4],[-10,-12],[-4,-26],[0,-38],[0,-46]];
+function buildTourPath(points){const out=[];for(let i=0;i<points.length-1;i++){const p0=points[Math.max(0,i-1)],p1=points[i],p2=points[i+1],p3=points[Math.min(points.length-1,i+2)];const steps=Math.max(8,Math.ceil(Math.hypot(p2[0]-p1[0],p2[1]-p1[1])/1.7));for(let j=0;j<steps;j++){const t=j/steps,t2=t*t,t3=t2*t;const x=.5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),z=.5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3);out.push({x,z})}}out.push({x:points.at(-1)[0],z:points.at(-1)[1]});let d=0;out[0].d=0;for(let i=1;i<out.length;i++){d+=Math.hypot(out[i].x-out[i-1].x,out[i].z-out[i-1].z);out[i].d=d}return {points:out,length:d}}
+const tourPath=buildTourPath(tourWaypoints);let travelMode='select',tourDistance=0,tourPause=0,tourLast=0;
+// El trayecto termina ante el árbol luminoso (no va más allá) y dura menos de 3 minutos.
+function tourAt(x,z,after=0){for(const p of tourPath.points)if(p.d>after&&Math.hypot(p.x-x,p.z-z)<1.6)return p.d/tourPath.length;return null}
+const _a1=tourAt(30,5)||.2,_a2=tourAt(-32,-14,_a1*tourPath.length)||.6;
+const tourStops=[{at:_a1,duration:3.5,label:'El jardín de cristales'},{at:_a2,duration:3.5,label:'La laguna de las burbujas'}];let nextTourStop=0,tourSpeed=0;
+const TOUR_SPEED=Math.max(2.2,tourPath.length/150);
+function tourPosition(distance){const a=tourPath.points;let lo=0,hi=a.length-1;while(lo<hi){const m=(lo+hi)>>1;if(a[m].d<distance)lo=m+1;else hi=m}const b=a[lo],prev=a[Math.max(0,lo-1)],t=b.d===prev.d?0:(distance-prev.d)/(b.d-prev.d);return {x:prev.x+(b.x-prev.x)*t,z:prev.z+(b.z-prev.z)*t,dx:b.x-prev.x,dz:b.z-prev.z}}
+let shipBank=0,finishTurn=false,yawVel=0,shipOff=0,smDt=1/60;function tourDt(d){smDt+=(d-smDt)*.12;return smDt}
+// Giro suave: la velocidad de giro acelera y frena poco a poco (nunca a golpes).
+function steerYaw(diff,dt,maxRate,gain){const want=Math.max(-maxRate,Math.min(maxRate,diff*gain));yawVel+=(want-yawVel)*Math.min(1,dt*3);cam.yaw+=yawVel*dt}
+// La pose de la nave sale del vuelo: al girar a la izquierda se inclina y se desplaza a la izquierda.
+function flightPose(dt){shipBank+=(Math.max(-.34,Math.min(.34,-yawVel*.55))-shipBank)*Math.min(1,dt*3.5);shipOff+=(-yawVel*.075-shipOff)*Math.min(1,dt*2.5);popFx.shipX=shipOff*W;popFx.kick*=Math.exp(-dt*3);popFx.kickY*=Math.exp(-dt*3)}
+function updateTour(dt){
+ if(travelMode==='finished'){const d0=((0-cam.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;steerYaw(d0,dt,.5,1.2);tourSpeed=0;flightPose(dt);return}
+ if(travelMode!=='tour')return;
+ // Mira hacia donde va a ir (4 m por delante) para anticipar las curvas.
+ const ahead=tourPosition(Math.min(tourPath.length,tourDistance+4));
+ const diff=((Math.atan2(-ahead.dx,-ahead.dz)-cam.yaw+Math.PI*3)%(Math.PI*2))-Math.PI;
+ steerYaw(diff,dt,.7,1.2);flightPose(dt);
+ const stop=tourStops[nextTourStop],stopAt=stop?tourPath.length*stop.at:0;
+ if(tourPause>0){tourPause-=dt;tourSpeed*=Math.exp(-dt*5);tourDistance=Math.min(tourPath.length,tourDistance+tourSpeed*dt);const q=tourPosition(tourDistance);cam.x=q.x;cam.z=q.z;return}
+ if(stop&&tourDistance>=stopAt-.25){tourPause=stop.duration;nextTourStop++;document.querySelector('#tour-caption').textContent=stop.label;return}
+ // Velocidad lenta; frena en las curvas y se acerca a las paradas y a la meta de forma progresiva.
+ let want=TOUR_SPEED*Math.max(.15,1-Math.abs(diff)/.8);
+ if(stop)want=Math.min(want,Math.max(0,stopAt-tourDistance)*.55+.05);
+ want=Math.min(want,Math.max(0,tourPath.length-tourDistance)*.55+.05);
+ tourSpeed+=(want-tourSpeed)*Math.min(1,dt*1.6);
+ tourDistance=Math.min(tourPath.length,tourDistance+tourSpeed*dt);
+ const p=tourPosition(tourDistance);cam.x=p.x;cam.z=p.z;
+ cam.y=FLY_H;cam.pitch=Math.sin(tourDistance*.012)*.006;
+ if(tourDistance>=tourPath.length-.3){travelMode='finished';tourSpeed=0;document.querySelector('#tour-caption').textContent='El árbol dorado · Fin del trayecto';document.querySelector('#path-status').textContent='Trayecto completado';document.querySelector('#where').textContent='Claro del árbol';const q=document.querySelector('#crypt-q');q.classList.add('on');setTimeout(()=>{if(travelMode!=='finished')return;q.style.transition='opacity .2s';q.classList.remove('on');document.querySelector('#journey-end').style.display='grid';setTimeout(()=>q.style.transition='',400)},3000)}
+}
+function beginJourney(mode){document.querySelector('#crypt-q').classList.remove('on');if(mode==='tour')resetTour();travelMode=mode;document.querySelector('#journey-end').style.display='none';document.querySelector('#journey-choice').style.display='none';if(mode==='tour'){document.querySelector('#tour-caption').style.display='block';document.querySelector('.pad').style.display='none';document.querySelector('.bottom').style.display='none';{const c=document.querySelector('#tour-caption');c.style.top='auto';c.style.bottom='30px';c.style.whiteSpace='normal';c.style.textAlign='center';c.style.maxWidth='88vw'}document.querySelector('.help').style.display='none';document.querySelector('#path-status').textContent='Paseo guiado por el bosque';document.querySelector('#where').textContent='Comienza la aventura';for(const k in keys)keys[k]=false}else{document.querySelector('#tour-caption').style.display='none'}}
+document.querySelector('#start-tour').onclick=()=>beginJourney('tour');document.querySelector('#start-manual').onclick=()=>beginJourney('manual');
+const MANUAL_ENABLED=false;   // El recorrido manual está desactivado por ahora (cámbialo a true para recuperarlo).
+if(!MANUAL_ENABLED)document.querySelector('#start-manual').style.display='none';
+// Vuelve a dejar todo como al principio del trayecto; los felinos cambian de sitio en cada vuelta.
+function resetTour(){cam.x=0;cam.z=46;cam.y=FLY_H;cam.yaw=0;cam.pitch=0;tourDistance=0;tourPause=0;nextTourStop=0;tourSpeed=0;yawVel=0;shipOff=0;shipBank=0;popFx.targets.length=0;popFx.kick=0;popFx.kickY=0;buildCats();document.querySelector('#tour-caption').textContent='Un paseo entre los secretos del bosque'}
+document.querySelector('#again').onclick=()=>beginJourney('tour');
+// «Salir» cierra todo: detiene el juego y limpia la pantalla. Si el navegador permite cerrar la pestaña, se cierra;
+// si no (los navegadores solo dejan cerrar pestañas abiertas por un script), queda una pantalla de despedida.
+document.querySelector('#exit').onclick=()=>{gameClosed=true;travelMode='select';try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}
+ document.querySelector('#crypt-q').classList.remove('on');for(const sel of ['#journey-end','#journey-choice','header','canvas'])document.querySelector(sel).style.display='none';
+ ctx.fillStyle='#071a25';ctx.fillRect(0,0,canvas.width,canvas.height);
+ try{window.close()}catch(e){}
+ setTimeout(()=>{document.querySelector('#bye').style.display='grid'},120)};
+document.querySelector('#reenter').onclick=()=>location.reload();
+
+function nearTrail(x,z,pad=0){return trails.some(t=>Math.hypot(x-t.x,z-t.z)<4.5+pad)}
+// Overlapping irregular earth decals replace the hard rectangular road strips.
+const earthPatches=[];for(const route of routes)for(let i=1;i<route.length;i++){const a=route[i-1],b=route[i],length=Math.hypot(b[0]-a[0],b[1]-a[1]),n=Math.ceil(length/2.3);for(let j=0;j<=n;j++){const t=j/n,x=a[0]+(b[0]-a[0])*t,z=a[1]+(b[1]-a[1])*t,phase=Math.sin(x*7.3+z*2.8);earthPatches.push({x,z,size:7.2+phase*.3,angle:Math.atan2(b[0]-a[0],b[1]-a[1])+phase*.35})}}
+// Landmarks stay readable inside a larger, clustered forest.
+add('tree-gold',0,-66,40,33,'Árboles');add('platform',0,-68,43,9,'Rocas',-.5);
+add('crystal',31,-19,17,15,'Cristales');add('crystal',42,-30,10,10,'Cristales');add('crystal',24,-29,7,6,'Cristales');
+// Each waterfall belongs to the same illustrated mountain: no independent floating water.
+add('cliff',-46,-40,35,44,'Rocas',-.9);add('cliff',-67,-58,32,39,'Rocas',-.9);add('cliff',126,-142,38,47,'Rocas',-.9);
+// Cada cascada se asienta en el suelo: tierra y rocas musgosas bajo su base (sin tocar la aleatoriedad del bosque).
+for(const [cx,cz,cw] of [[-46,-40,35],[-67,-58,32],[126,-142,38]]){
+ [[-.3,1.5,.36],[.02,2.8,.42],[.3,1.5,.36],[-.15,-1.5,.3],[.18,-1.2,.3]].forEach(([dx,dz,sz],i)=>earthPatches.push({x:cx+dx*cw,z:cz+dz,size:cw*sz+3,angle:i*1.37,a:.95}));
+ [[-.42,2.2,6.5],[-.24,3.4,5],[-.05,3.9,7],[.16,3.5,5.5],[.36,2.6,6.8],[.5,1.4,5]].forEach(([dx,dz,rw],i)=>objects.push({n:'rock',x:cx+dx*cw,z:cz+dz,w:rw,h:rw*.56,layer:'Rocas',y:-.25,phase:i*.9}))}
+function clear(x,z,pad=0){return nearTrail(x,z,pad)||(Math.abs(x)<17+pad && z>-55 && z<58)||(Math.abs(x)<7+pad && z>-45 && z<85)||Math.hypot(x+29,z+14)<25+pad||Math.hypot(x-32,z+22)<18+pad||Math.hypot(x,z+66)<25+pad||Math.hypot(x+48,z+40)<24+pad}
+for(let cluster=0;cluster<78;cluster++){let cx=(rand()-.5)*570,cz=(rand()-.5)*570;for(let j=0;j<4;j++){let x=cx+(rand()-.5)*29,z=cz+(rand()-.5)*29;if(clear(x,z,3))continue;let h=12+rand()*23;add(j%3?'tree':'tree-old',x,z,h*(.85+rand()*.4),h,'Árboles');if(j===0)add('vine',x,z,9,7,'Lianas',h*.55);for(let k=0;k<3;k++){const px=x+(rand()-.5)*12,pz=z+(rand()-.5)*12;if(clear(px,pz))continue;const n=['plant','flower-blue','flower-purple'][k],ph=n==='plant'?1.7+rand()*2.2:.5+rand()*1.2;add(n,px,pz,ph*1.6,ph,'Plantas')}}}
+// Near-ground undergrowth breaks up the open terrain without blocking the paths.
+for(let i=0;i<650;i++){let x=(rand()-.5)*540,z=(rand()-.5)*540;if(clear(x,z))continue;let n=i%4?'plant':i%2?'flower-blue':'flower-purple',h=.3+rand()*1.2;add(n,x,z,h*1.7,h,'Plantas')}
+// Low plants trace the paths and fill the foreground at human scale.
+for(let i=0;i<250;i++){const z=-240+rand()*480,x=(i%2?1:-1)*(6+rand()*11);if(Math.hypot(x+29,z+14)<25||Math.hypot(x,z+66)<23)continue;const n=i%3?'plant':'flower-blue',h=.35+rand()*1.15;add(n,x,z,h*1.6,h,'Plantas')}
+// Extra shrubs, flowering patches and young trees cluster along the new walks.
+for(let i=0;i<1100;i++){let x=(rand()-.5)*340,z=(rand()-.5)*370;if(clear(x,z,0))continue;const n=['plant','flower-blue','flower-purple'][i%3],h=i%3===0?.6+rand()*1.8:.3+rand()*.9;add(n,x,z,h*1.6,h,'Plantas')}
+for(let i=0;i<85;i++){const t=trails[Math.floor(rand()*trails.length)],side=i%2?1:-1,offset=7+rand()*6,x=t.x+Math.cos(t.angle)*offset*side,z=t.z-Math.sin(t.angle)*offset*side;if(clear(x,z,1))continue;const h=5+rand()*6;add(i%3?'tree':'tree-old',x,z,h*1.1,h,'Árboles')}
+// Sparse low foliage on the soft shoulders, outside the walkable core.
+for(let i=0;i<earthPatches.length;i+=7){const t=earthPatches[i],side=i%2?1:-1,x=t.x+Math.cos(t.angle)*3.5*side,z=t.z-Math.sin(t.angle)*3.5*side;if(closestPath(x,z).distance<2.7)continue;const h=.2+rand()*.45;add(i%3?'plant':'flower-blue',x,z,h*1.5,h,'Plantas')}
+// Natural variation pass: irregular woodland pockets soften visible repetition.
+for(let i=0;i<230;i++){
+  const t=trails[Math.floor(rand()*trails.length)];
+  const side=rand()<.5?-1:1, offset=7+Math.pow(rand(),.72)*24;
+  const drift=(rand()-.5)*18;
+  const x=t.x+Math.cos(t.angle)*offset*side+Math.sin(t.angle)*drift;
+  const z=t.z-Math.sin(t.angle)*offset*side+Math.cos(t.angle)*drift;
+  if(clear(x,z,2))continue;
+  const roll=rand(),h=roll<.18?17+rand()*17:6+rand()*13;
+  add(roll<.55?'tree':roll<.82?'tree-old':'tree',x,z,h*(.78+rand()*.48),h,'Árboles');
+  if(rand()<.22 && !clear(x+2,z-2,1))add('vine',x+(rand()-.5)*3,z+(rand()-.5)*3,5+rand()*7,4+rand()*5,'Lianas',h*(.35+rand()*.35));
+  // Small, uneven undergrowth groups rather than evenly spaced rows.
+  const count=2+Math.floor(rand()*5);
+  for(let k=0;k<count;k++){
+    const px=x+(rand()-.5)*15,pz=z+(rand()-.5)*15;
+    if(clear(px,pz,1))continue;
+    const r=rand(),ph=r<.48?.35+rand()*1.15:.45+rand()*1.05;
+    add(r<.48?'plant':r<.74?'flower-blue':'flower-purple',px,pz,ph*(1.1+rand()),ph,'Plantas');
+  }
+}
+// A few luminous crystal growths are tucked into clearings, never in the trail.
+for(let i=0;i<38;i++){
+  const t=trails[Math.floor(rand()*trails.length)],side=rand()<.5?-1:1,off=10+rand()*20;
+  const x=t.x+Math.cos(t.angle)*off*side+(rand()-.5)*9;
+  const z=t.z-Math.sin(t.angle)*off*side+(rand()-.5)*9;
+  if(clear(x,z,3))continue;
+  const h=3+rand()*8;add('crystal',x,z,h*1.05,h,'Cristales');
+}
+for(let i=0;i<145;i++){const x=(rand()-.5)*540,z=(rand()-.5)*540;if(clear(x,z,1))continue;add('rock',x,z,2+rand()*6,1+rand()*2,'Rocas')}
+for(let i=0;i<18;i++){let a=i*Math.PI/9;add('mountain',Math.sin(a)*415,Math.cos(a)*415,175,80,'Montañas',-8)}add('planet',115,-450,120,70,'Planeta',52);
+const FLY_H=3.9;   // altura de vuelo de la nave
+const cam={x:0,y:FLY_H,z:46,yaw:0,pitch:0},keys={};let flying=false,animate=true,time=0,drag=false,mouseStart=0,mouseX=0,mouseY=0,walkMouse=false,velocity=0;
+// Schedule by animation time: pauses stop both the flight and the next appearance timer.
+let nextFlyby=.1,flybys=[];
+function spawnFlyby(start=time){return {start,duration:8+Math.random()*6,side:Math.random()<.5?1:-1,forward:10+Math.random()*19,altitude:4.2+Math.random()*4.5,x:cam.x,z:cam.z,yaw:cam.yaw,phase:Math.random()*6.28,size:2.5+Math.random()*2.1}}
+function updateFlyby(){if(time>=nextFlyby){const count=1+Math.floor(Math.random()*2);for(let i=0;i<count&&flybys.length<4;i++)flybys.push(spawnFlyby(time+(time<1?-2:i*.7)));nextFlyby=time+8+Math.random()*7}flybys=flybys.filter(f=>time-f.start<f.duration);return flybys.filter(f=>time>=f.start).map(f=>{const t=(time-f.start)/f.duration,across=(t*2-1)*f.forward*.95*f.side,forward=f.forward+Math.sin(t*Math.PI)*2,c=Math.cos(f.yaw),s=Math.sin(f.yaw);return {n:'sprite',x:f.x+c*across-s*forward,z:f.z-s*across-c*forward,y:f.altitude+Math.sin(t*Math.PI*2+f.phase)*.7+Math.sin(time*18+f.phase)*.06,w:f.size,h:f.size*.67*(1+Math.sin(time*22+f.phase)*.07),layer:'Fauna',phase:0,facing:f.side}})}
+// ---- Raíces integradas en el suelo: parche de tierra y cristales de colores al pie de cada árbol ----
+(function treeRoots(){
+ let sd=70417;const tr=()=>{sd=(sd*1664525+1013904223)>>>0;return sd/4294967296};
+ // Cristales del mismo dibujo, con distintos tintes (se preparan una sola vez).
+ const tints=[0,-150,-95,95,150],bakeW=640;
+ tints.forEach((deg,k)=>{const im=images.crystal,c=document.createElement('canvas');c.width=bakeW;c.height=Math.round(bakeW*im.height/im.width);const g=c.getContext('2d');if(deg&&'filter' in g)g.filter=`hue-rotate(${deg}deg) saturate(1.2)`;g.drawImage(im,0,0,c.width,c.height);images['crystal-'+k]=c});
+ const nearTour=(x,z)=>{for(let i=0;i<tourPath.points.length;i+=6){const p=tourPath.points[i];if(Math.hypot(p.x-x,p.z-z)<115)return true}return false};
+ const inLake=(x,z)=>Math.hypot((x+29)/27,(z+14)/25)<1;   // la laguna no lleva tierra ni cristales encima
+ const trees=objects.filter(o=>o.layer==='Árboles'&&nearTour(o.x,o.z));
+ for(const t of trees){
+  // Tierra alrededor del pie del árbol (se funde con el musgo del suelo).
+  if(!inLake(t.x,t.z))earthPatches.push({x:t.x,z:t.z,size:Math.max(9,Math.min(t.n==='tree-gold'?34:28,t.w*.72)),angle:tr()*6.28,a:.92});
+ }
+ // Cristales grandes en los huecos libres del bosque: nunca junto a las raíces ni en el camino de la nave.
+ {const allTrees=objects.filter(o=>o.layer==='Árboles'),tp=tourPath.points,spots=[];let tries=0;
+  while(spots.length<44&&tries<5000){tries++;
+   const P=tp[Math.floor(tr()*tp.length)],ang=tr()*6.283,dist=9+tr()*34,x=P.x+Math.cos(ang)*dist,z=P.z+Math.sin(ang)*dist;
+   if(inLake(x,z)||z<-120)continue;
+   if(tp.some((q,i)=>i%2===0&&Math.hypot(q.x-x,q.z-z)<12))continue;
+   if(Math.hypot(x-tp[0].x,z-tp[0].z)<26)continue;
+   if(allTrees.some(t=>Math.hypot(t.x-x,t.z-z)<Math.max(10,t.w*.45)))continue;
+   if(spots.some(q=>Math.hypot(q.x-x,q.z-z)<10))continue;
+   if(objects.some(o=>(o.layer==='Plantas'||o.layer==='Cristales'||o.layer==='Rocas')&&Math.hypot(o.x-x,o.z-z)<(o.layer==='Cristales'?8:3)))continue;
+   spots.push({x,z})}
+  for(const q of spots){const hh=5.2+tr()*4.3,v=Math.floor(tr()*tints.length),im=images['crystal-'+v];objects.push({n:'crystal-'+v,x:q.x,z:q.z,w:hh*(im.width/im.height)*(.8+tr()*.3),h:hh,layer:'Cristales',y:0,phase:tr()*6.28})}}
+ // Más tierra suelta repartida por el bosque para romper la uniformidad del suelo.
+ for(let i=0;i<150;i++){const x=-150+tr()*320,z=-175+tr()*300;if(inLake(x,z))continue;earthPatches.push({x,z,size:6+tr()*8,angle:tr()*6.28,a:.5+tr()*.35})}
+})();
+
+// ---- Cristales: menos y mejor repartidos. Se mantienen los del árbol luminoso (y los tres del jardín de cristales),
+// se quitan los que estorban la vista hacia el árbol y se añaden algunos alrededor, a los lados y lejos de las raíces. ----
+(function fewerCrystals(){
+ let sd=9137;const r=()=>{sd=(sd*1664525+1013904223)>>>0;return sd/4294967296};
+ const TX=0,TZ=-66,garden=[[31,-19],[42,-30],[24,-29]];
+ const isGarden=o=>garden.some(g=>Math.abs(o.x-g[0])<.01&&Math.abs(o.z-g[1])<.01);
+ const inView=o=>Math.abs(o.x-TX)<10&&o.z>-64&&o.z<-30;   // pasillo de la nave hacia el árbol
+ for(let i=objects.length-1;i>=0;i--){const o=objects[i];if(o.layer!=='Cristales'||isGarden(o))continue;
+  if(Math.hypot(o.x-TX,o.z-TZ)>46||inView(o))objects.splice(i,1)}
+ const have=()=>objects.filter(o=>o.layer==='Cristales'&&Math.hypot(o.x-TX,o.z-TZ)<46&&!isGarden(o));
+ const trees=objects.filter(o=>o.layer==='Árboles'&&o.n!=='tree-gold');
+ const tints=[0,1,2,3,4];let added=0,tries=0;
+ while(added<8&&tries<8000){tries++;
+  const side=added%2?1:-1,x=TX+side*(17+r()*18),z=-48-r()*30;
+  if(z<-63&&z>-84&&Math.abs(x)<24)continue;                 // detrás o bajo la plataforma: tapado por el árbol
+  if(inLakeXZ(x,z))continue;
+  if(trees.some(t=>Math.hypot(t.x-x,t.z-z)<Math.max(8,t.w*.36)))continue;   // nunca en las raíces de otros árboles
+  if(have().some(c=>Math.hypot(c.x-x,c.z-z)<12))continue;
+  if(objects.some(o=>(o.layer==='Plantas'&&o.h>2.2||o.layer==='Rocas')&&Math.hypot(o.x-x,o.z-z)<3))continue;
+  const hh=7+r()*4,v=tints[Math.floor(r()*tints.length)],im=images['crystal-'+v];
+  objects.push({n:'crystal-'+v,x,z,w:hh*(im.width/im.height)*(.85+r()*.2),h:hh,layer:'Cristales',y:0,phase:r()*6.28});added++}
+ function inLakeXZ(x,z){return Math.hypot((x+29)/27,(z+14)/25)<1}
+})();
+
+// ---- Felinos del bosque: ya están ahí, semiescondidos tras arbustos y árboles; se esconden en un instante cuando la nave se acerca ----
+const cats=[],catRemoved=[],catAdded=[];let lastCatT=0;const catShaded={};
+// Versión de cada felino con una sombra suave de follaje abajo (se prepara una sola vez) para que encaje en el bosque.
+function catSprite(n){if(catShaded[n])return catShaded[n];const im=images[n],c=document.createElement('canvas');c.width=im.width;c.height=im.height;const g=c.getContext('2d');g.drawImage(im,0,0);g.globalCompositeOperation='source-atop';const gr=g.createLinearGradient(0,c.height*.35,0,c.height);gr.addColorStop(0,'rgba(8,30,36,0)');gr.addColorStop(1,'rgba(8,30,36,.5)');g.fillStyle=gr;g.fillRect(0,0,c.width,c.height);g.fillStyle='rgba(20,70,70,.12)';g.fillRect(0,0,c.width,c.height);return catShaded[n]=c}
+// Cada vez que empieza el trayecto se reparten de nuevo, al azar.
+function buildCats(){
+ for(const o of catAdded){const i=objects.indexOf(o);if(i>=0)objects.splice(i,1)}
+ for(const o of catRemoved){o.removed=false;objects.push(o)}
+ catAdded.length=0;catRemoved.length=0;cats.length=0;
+ const cr=Math.random,used=new Set(),tourFar=(x,z,d)=>tourPath.points.every((p,i)=>i%3||Math.hypot(p.x-x,p.z-z)>=d);
+ const covers=objects.filter(o=>(o.layer==='Plantas'&&o.h>=2.4)||(o.layer==='Árboles'&&(o.n==='tree'||o.n==='tree-old')&&o.w>=14));
+ const w=2.9;
+ // Despeja el campo de visión: fuera las plantas sueltas que taparían al felino entre el camino y él.
+ function clearSight(cx,cz,cover){
+  const near=trails.filter(t=>{const k=Math.hypot(t.x-cx,t.z-cz);return k>3&&k<32});
+  for(let i=objects.length-1;i>=0;i--){const o=objects[i];if(o===cover||used.has(o)||(o.layer!=='Plantas'&&!(o.n&&o.n.startsWith('crystal-'))))continue;const d0=Math.hypot(o.x-cx,o.z-cz);if(d0>22)continue;
+   let kill=d0<2.4;
+   if(!kill)for(const t of near){const sx=cx-t.x,sz=cz-t.z,L2=sx*sx+sz*sz,u=Math.max(0,Math.min(1,((o.x-t.x)*sx+(o.z-t.z)*sz)/L2));if(Math.hypot(o.x-(t.x+sx*u),o.z-(t.z+sz*u))<2.1&&u<.97){kill=true;break}}
+   if(kill){o.removed=true;catRemoved.push(o);objects.splice(i,1)}}
+ }
+ // Coloca un felino medio escondido tras su arbusto (visto desde el punto P del trayecto).
+ const place=(P,cover,alarm,forceN)=>{
+  used.add(cover);
+  const n=forceN||(cr()<.7?'felino':'felino-espalda'),im=images[n],h=w*im.height/im.width;
+  let ux=cover.x-P.x,uz=cover.z-P.z;const ul=Math.hypot(ux,uz)||1;ux/=ul;uz/=ul;
+  const px=-uz,pz=ux,side=cr()<.5?-1:1,cv=cover.layer==='Plantas'?cover.w*.34:cover.w*.3,f=.55+cr()*.15,off=side*(cv+(f-.5)*w);
+  const cx=cover.x+ux*.8+px*off,cz=cover.z+uz*.8+pz*off;
+  clearSight(cx,cz,cover);
+  cats.push({n,w,h,x0:cx,z0:cz,xh:cx,zh:cz,P:[P.x,P.z],hide:0,fled:false,jump:0,alarm:0,ph:cr()*6.28,flip:n==='felino'?side>0:cr()<.5})};
+ // Dos felinos custodian la entrada del árbol luminoso, uno a cada lado, mirándose; no se mueven de ahí.
+ const T=objects.find(o=>o.n==='tree-gold');
+ if(T){const im=images.felino,gw=3.4,gh=gw*im.height/im.width;
+  for(const side of [-1,1]){const cx=T.x+side*4.4,cz=T.z+6;
+   clearSight(cx,cz,null);
+   cats.push({n:'felino',w:gw,h:gh,x0:cx,z0:cz,xh:cx,zh:cz,P:[0,-46],hide:0,fled:false,jump:0,alarm:0,ph:cr()*6.28,flip:side>0,guard:true})}}
+}
+buildCats();
+function updateCats(){
+ // Los felinos permanecen siempre donde están, semiescondidos o custodiando; solo respiran y se mecen.
+ const out=[];
+ for(const c of cats)out.push({n:c.n,cat:true,layer:'Felinos',x:c.x0,z:c.z0,y:0,w:c.w,h:c.h,phase:c.ph,flip:c.flip,hide:0,bias:c.guard?0:.9});
+ return out}
+function drawCat(o,base,w,h){
+ const a=1-Math.max(0,(o.hide-.65)/.35);if(a<=0)return;
+ const im=catSprite(o.n),br=1+Math.sin(time*2.1+o.phase)*.012,sw=Math.sin(time*.9+o.phase)*.012*(1-o.hide);
+ ctx.save();ctx.globalAlpha=.26*a;ctx.fillStyle='#071b19';ctx.beginPath();ctx.ellipse(base.x,base.y-h*.015,w*.36,Math.max(1,h*.055),0,0,Math.PI*2);ctx.fill();
+ ctx.globalAlpha=a;ctx.translate(base.x,base.y);ctx.rotate(sw);ctx.scale(o.flip?-1:1,1);ctx.drawImage(im,-w/2,-h*br,w,h*br);ctx.restore()}
+const bubbleColors=[180,205,265,300,330,30,60,125];
+function spawnBubble(initial=false){const forward=5+Math.random()*75,across=(Math.random()-.5)*forward*1.6,c=Math.cos(cam.yaw),s=Math.sin(cam.yaw),life=9+Math.random()*16;return {x:cam.x+c*across-s*forward,z:cam.z-s*across-c*forward,y:.5+Math.random()*7,start:time-(initial?Math.random()*life*.8:0),life,radius:Math.random()<.18?.38+Math.random()*.22:Math.random()<.48?.20+Math.random()*.22:.075+Math.random()*.17,hue:bubbleColors[Math.floor(Math.random()*bubbleColors.length)],phase:Math.random()*6.28}}
+const bubbles=Array.from({length:340},()=>spawnBubble(true));
+const popFx={drops:[],rings:[],pops:[],targets:[],nextTarget:5,kick:0,kickY:0,shipX:0,lastHit:-9,lastT:undefined};
+function shipLayout(){const span=Math.min(W*.42,Math.max(W*.15,H*.26));return {sc:span/148,x:W*.5+popFx.shipX,y:H*.54,r:span*.26}}
+// Estallido suave: el aro se abre, la burbuja se desvanece y salen unas gotitas pequeñas y translúcidas.
+function burstBubble(sx,sy,r,hue,wx,wy,wz,radius){
+ popFx.lastHit=time;popFx.pops.push({x:wx,y:wy,z:wz,radius,hue,t0:time});popFx.rings.push({x:sx,y:sy,r,hue,t0:time});
+ const n=14+Math.floor(Math.random()*5);
+ for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=(.6+Math.random()*.9)*Math.max(36,r*2.4);popFx.drops.push({x:sx+Math.cos(a)*r*.7,y:sy+Math.sin(a)*r*.7,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-r*.9,r:Math.max(1.4,r*(.05+Math.random()*.07)),hue,t0:time,life:.8+Math.random()*.7})}
+ popFx.kick=(Math.random()<.5?-1:1)*.09;popFx.kickY=4;
+}
+function shipTargets(){
+ const out=[],L=shipLayout(),horizon=H*(.48+cam.pitch),c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);
+ const dtF=popFx.lastT===undefined?0:Math.min(.1,Math.max(0,time-popFx.lastT));popFx.lastT=time;
+ const ray=(depth,ex,ey,lat)=>{const lx=(L.x-W/2)*depth/F+ex+lat,vy=(horizon-L.y)*depth/F+ey;return {x:cam.x-s*depth+c*lx,z:cam.z-c*depth-s*lx,y:cam.y+vy}};
+ if(travelMode==='tour'){
+  // De vez en cuando, al azar, una burbuja se acerca a la nave.
+  if(time>=popFx.nextTarget&&popFx.targets.length<1&&tourPause<=0){
+   const depth=17+Math.random()*4,t={born:time,radius:.22+Math.random()*.3,hue:bubbleColors[Math.floor(Math.random()*bubbleColors.length)],ex:(Math.random()-.5)*.9,ey:(Math.random()-.5)*.7,off:(Math.random()<.5?-1:1)*(2+Math.random()*2.5)};
+   Object.assign(t,ray(depth,t.ex,t.ey,t.off));popFx.targets.push(t);popFx.nextTarget=time+8+Math.random()*9}
+  for(const t of popFx.targets.slice()){
+   const p=cameraPoint(t.x,t.y,t.z),age=time-t.born;
+   if(p.z<1.5||age>25){popFx.targets.splice(popFx.targets.indexOf(t),1);continue}
+   const d=ray(p.z,t.ex,t.ey,t.off*Math.max(0,(p.z-9)/9)),k=Math.min(1,dtF*2.2);t.x+=(d.x-t.x)*k;t.z+=(d.z-t.z)*k;t.y+=(d.y-t.y)*k;
+   const q=screen(cameraPoint(t.x,t.y,t.z)),rpx=t.radius*F/p.z;
+   if(p.z<=12.5&&p.z>=3&&Math.hypot(q.x-L.x,q.y-L.y)<L.r+rpx*.5&&time-popFx.lastHit>.8){burstBubble(q.x,q.y,rpx,t.hue,t.x,t.y,t.z,t.radius);popFx.targets.splice(popFx.targets.indexOf(t),1);continue}
+   out.push({n:'bubble',layer:'Burbujas',x:t.x,z:t.z,y:t.y-t.radius,w:t.radius*2,h:t.radius*2,alpha:Math.min(1,age)*.8,hue:t.hue,phase:0})}
+  // Cualquier burbuja del bosque que se cruce con la nave también puede estallar.
+  if(time-popFx.lastHit>.8){for(let i=0;i<bubbles.length;i++){const b=bubbles[i],age=time-b.start;if(age<1.2||b.life-age<1.5)continue;
+   const bx=b.x+Math.sin(time*.5+b.phase)*.7,bz=b.z+Math.cos(time*.3+b.phase)*.4,by=b.y+age*.19+b.radius,p=cameraPoint(bx,by,bz);if(p.z<3||p.z>12.5)continue;
+   const q=screen(p),rpx=b.radius*F/p.z;if(Math.hypot(q.x-L.x,q.y-L.y)<L.r+rpx*.5){burstBubble(q.x,q.y,rpx,b.hue,bx,by,bz,b.radius);bubbles[i]=spawnBubble();break}}}
+ }
+ popFx.pops=popFx.pops.filter(o=>time-o.t0<.3);
+ for(const o of popFx.pops){const k=(time-o.t0)/.3,m=1+.3*k;out.push({n:'bubble',layer:'Burbujas',x:o.x,z:o.z,y:o.y-o.radius*m,w:o.radius*2*m,h:o.radius*2*m,alpha:.7*(1-k),hue:o.hue,phase:0})}
+ return out;
+}
+function drawBubbleFx(){
+ if(!popFx.rings.length&&!popFx.drops.length)return;
+ const u=Math.max(1,W/1280);ctx.save();
+ popFx.rings=popFx.rings.filter(r=>time-r.t0<.4);
+ for(const r of popFx.rings){const k=(time-r.t0)/.4;ctx.globalAlpha=.5*(1-k);ctx.strokeStyle=`hsl(${r.hue},100%,88%)`;ctx.lineWidth=Math.max(1,2*u*(1-k));ctx.beginPath();ctx.arc(r.x,r.y,r.r*(1+.5*k),0,Math.PI*2);ctx.stroke()}
+ popFx.drops=popFx.drops.filter(d=>time-d.t0<d.life);
+ for(const d of popFx.drops){const a=time-d.t0,k=a/d.life,e=(1-Math.exp(-3*a))/3,x=d.x+d.vx*e,y=d.y+d.vy*e+.5*140*u*a*a,rad=d.r*(1-.45*k)*u;
+  ctx.globalAlpha=.6*(1-k);ctx.fillStyle=`hsl(${d.hue},100%,80%)`;ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=.8*(1-k);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x-rad*.3,y-rad*.3,rad*.35,0,Math.PI*2);ctx.fill()}
+ ctx.restore();
+}
+// ===== Aves: bandadas de pájaros pequeños (como palomas), de tamaños variados, que cruzan el bosque =====
+const birdAspect=images.bird.height/images.bird.width,birds=[],BIRD_MAX=90,br=(a,b)=>a+Math.random()*(b-a),clamp01=v=>Math.max(0,Math.min(1,v));let nextBirdFlock=2,lastBirdT=0,birdMips=null,birdHaze=null;
+// Versiones reducidas del sprite (nitidez al verlo lejos) y una versión con bruma para integrarlo con la distancia.
+function buildBirdMips(){
+ if(birdMips)return;birdMips=[];birdHaze=[];
+ let prev=images.bird,w=prev.width,h=prev.height;
+ while(w>=64){
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(prev,0,0,w,h);
+  const z=document.createElement('canvas');z.width=w;z.height=h;
+  const k=z.getContext('2d');k.drawImage(c,0,0);k.globalCompositeOperation='source-atop';k.fillStyle='rgba(140,180,202,.62)';k.fillRect(0,0,w,h);
+  birdMips.push(c);birdHaze.push(z);prev=c;w>>=1;h>>=1;
+ }
+}
+function camBasis(){const c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);return {fx:-s,fz:-c,rx:c,rz:-s}}
+// Aparece una bandada (o un ave suelta) en un punto y con un rumbo al azar, casi siempre cruzando la vista.
+function spawnBirdFlock(initial=false){
+ const room=BIRD_MAX-birds.length;if(room<1)return;
+ const B=camBasis(),count=Math.min(room,Math.random()<.06?1:3+Math.floor(Math.pow(Math.random(),1.15)*10));
+ const dist=initial?br(16,95):br(45,105),ang=br(-1.15,1.15),fwd=Math.cos(ang)*dist,lat=Math.sin(ang)*dist;
+ const cx=cam.x+B.fx*fwd+B.rx*lat,cz=cam.z+B.fz*fwd+B.rz*lat;
+ let psi=(lat<0?1:-1)*(Math.random()<.75?1:-1)*(Math.PI/2+br(-.7,.7));const r=Math.random();
+ if(r<.1)psi=br(-.5,.5);else if(r<.2)psi=Math.PI+br(-.5,.5);
+ const hd=Math.atan2(B.fx*Math.cos(psi)+B.rx*Math.sin(psi),B.fz*Math.cos(psi)+B.rz*Math.sin(psi));
+ const sH=Math.sin(hd),cH=Math.cos(hd),spd=br(3,7),alt=1.8+Math.pow(Math.random(),1.25)*14,fsize=.55+Math.pow(Math.random(),1.9)*1.35;
+ for(let i=0;i<count;i++){
+  const along=br(-4,4),across=br(-4.5,4.5),w=fsize*br(.82,1.2),y=Math.max(1.5,alt+br(-2.2,2.2));
+  birds.push({x:cx+sH*along+cH*across,z:cz+cH*along-sH*across,y,alt0:y,hd:hd+br(-.12,.12),spd:spd*br(.9,1.12),w,h:w*birdAspect,born:time-(initial?br(0,6):0),life:br(35,70),ph:br(0,6.28),ff:br(5.5,8.5),fph:br(0,6.28),A:1,sx:1,rot:0,avx:0,avy:0,avz:0});
+ }
+}
+// Zona de la pantalla que ocupa la nave: las aves la esquivan y, si aun así entran, se desvanecen.
+function shipKeepOut(){if(travelMode!=='tour'&&travelMode!=='finishing'&&travelMode!=='finished')return null;const L=shipLayout();return {x:L.x,y:L.y,a:118*L.sc,b:64*L.sc}}
+function shipHazard(S,x,y,z,w){
+ const p=cameraPoint(x,y,z);if(p.z<1||p.z>24)return null;
+ const q=screen(p),rpx=w*F/p.z,A=S.a+rpx*.55,B=S.b+rpx*.4,ex=(q.x-S.x)/A,ey=(q.y-S.y)/B;
+ return {d2:ex*ex+ey*ey,ex,ey};
+}
+function updateBirds(){
+ const dt=Math.min(.1,Math.max(0,time-lastBirdT));lastBirdT=time;
+ if(time>=nextBirdFlock){spawnBirdFlock();nextBirdFlock=time+br(1,3.2)}
+ const S=shipKeepOut(),B=camBasis(),cs=Math.cos(cam.yaw),sn=Math.sin(cam.yaw),out=[];
+ for(let i=birds.length-1;i>=0;i--){
+  const b=birds[i],age=time-b.born,dist=Math.hypot(b.x-cam.x,b.z-cam.z);
+  if(age>b.life||dist>135){birds.splice(i,1);continue}
+  b.hd+=Math.sin(time*.55+b.ph)*.22*dt;
+  const vx=Math.sin(b.hd)*b.spd,vz=Math.cos(b.hd)*b.spd,vy=Math.sin(time*1.3+b.ph*1.7)*.9+(b.alt0-b.y)*.5;
+  let tx=0,ty=0,tz=0,alarm=0,now=null;
+  if(S){
+   now=shipHazard(S,b.x,b.y,b.z,b.w);
+   const soon=shipHazard(S,b.x+vx*1.2,b.y+vy*1.2,b.z+vz*1.2,b.w),h=soon&&(!now||soon.d2<now.d2)?soon:now;
+   if(h&&h.d2<2.6){
+    const k=Math.min(1,(2.6-h.d2)/2.6),n=Math.hypot(h.ex,h.ey)||1;let ux=h.ex/n,uy=-h.ey/n;
+    if(n<.05){ux=Math.random()<.5?-1:1;uy=1}
+    if(uy>0)uy*=1.25;
+    tx=B.rx*ux*k*14+B.fx*k*3;tz=B.rz*ux*k*14+B.fz*k*3;ty=uy*k*14;alarm=k;
+   }
+  }
+  const kk=Math.min(1,dt*(alarm>0?6:2.5));b.avx+=(tx-b.avx)*kk;b.avy+=(ty-b.avy)*kk;b.avz+=(tz-b.avz)*kk;
+  b.x+=(vx+b.avx)*dt;b.z+=(vz+b.avz)*dt;b.y=Math.max(1.3,Math.min(24,b.y+(vy+b.avy)*dt));
+  // Orientación: mira hacia donde vuela (se estrecha al volar de frente o de espaldas) y se inclina al subir o bajar.
+  const tvx=vx+b.avx,tvz=vz+b.avz,tvy=vy+b.avy,vcx=tvx*cs-tvz*sn,hs=Math.hypot(vcx,-tvx*sn-tvz*cs)+1e-6;
+  let t=-Math.max(-1,Math.min(1,vcx/hs*1.5));if(Math.abs(t)<.5)t=(t<0||(t===0&&b.sx<0))?-.5:.5;
+  b.sx+=(t-b.sx)*Math.min(1,dt*4.5);
+  b.rot=Math.max(-.35,Math.min(.35,tvy*.07))*Math.sign(b.sx)+Math.sin(time*1.7+b.ph)*.05;
+  // Aleteo en tandas con tramos de planeo; si esquiva la nave bate con más fuerza.
+  const g=Math.sin(time*.45+b.ph*2.3);b.A=Math.max(alarm>.2?1:0,Math.min(1,(.85-g)*1.6));b.fph+=dt*6.2832*b.ff*(1+alarm*.35);
+  const pc=cameraPoint(b.x,b.y,b.z);
+  let a=clamp01(age/1.5)*clamp01((125-dist)/30)*clamp01((b.life-age)/2)*clamp01((pc.z-2)/1.5);
+  if(now&&now.d2<1.5)a*=clamp01((Math.sqrt(now.d2)-.7)/.5);
+  /*BT*/
+  if(a>.01)out.push({n:'bird',layer:'Aves',x:b.x,z:b.z,y:b.y-b.h/2,w:b.w,h:b.h,alpha:a,phase:0,b});
+ }
+ return out;
+}
+function drawBird(o,base,p,w,h){
+ buildBirdMips();const b=o.b,S=b.A*Math.sin(b.fph)+(1-b.A)*.4;
+ // Sombra suave sobre el suelo para las aves que vuelan bajo.
+ if(b.y<9&&p.z<95){const g=screen(cameraPoint(b.x,0,b.z));ctx.save();ctx.globalAlpha=(1-b.y/9)*.17*o.alpha;ctx.fillStyle='#04141a';ctx.beginPath();ctx.ellipse(g.x,g.y,Math.max(1,w*.3),Math.max(.6,w*.06),0,0,6.2832);ctx.fill();ctx.restore()}
+ let mi=0;for(let i=birdMips.length-1;i>=0;i--)if(birdMips[i].width>=w){mi=i;break}
+ const haze=Math.min(.7,Math.max(0,(p.z-22)/120)),X0=.3;
+ ctx.save();ctx.translate(base.x,base.y-h/2+S*h*.02);ctx.rotate(b.rot);ctx.scale(b.sx,1);
+ // El cuerpo queda fijo y las alas (franjas verticales) se doblan hacia arriba y abajo: así aletea el ave.
+ const pass=(im,alpha)=>{
+  ctx.globalAlpha=o.alpha*alpha;const iw=im.width,ih=im.height;
+  if(w<34){const hh=h*(1+.08*S);ctx.drawImage(im,-w/2,-h/2-(hh-h)*.35,w,hh);return}
+  const N=w>140?16:10,bw=Math.round(iw*X0),sw=(iw-bw)/N,dw=w*(1-bw/iw)/N,ov=1.2,amp=h*.24;
+  ctx.drawImage(im,0,0,bw,ih,-w/2,-h/2,w*bw/iw,h);
+  for(let i=0;i<N;i++){const t=(i+.5)/N,dy=-amp*Math.pow(t,1.45)*S,last=i===N-1;
+   ctx.drawImage(im,bw+i*sw,0,sw+(last?0:ov),ih,-w/2+w*bw/iw+i*dw,-h/2+dy,dw+(last?0:ov*w/iw),h)}
+ };
+ pass(birdMips[mi],1);if(haze>.03)pass(birdHaze[mi],haze);
+ ctx.restore();
+}
+for(let i=0;i<9;i++)spawnBirdFlock(true);
+function updateBubbles(){return updateBubblesBase().concat(shipTargets())}
+function updateBubblesBase(){return bubbles.map((b,i)=>{if(time-b.start>b.life||Math.hypot(cam.x-b.x,cam.z-b.z)>100)b=bubbles[i]=spawnBubble();const age=time-b.start,fade=Math.min(1,age/.8,(b.life-age)/1.5);return {n:'bubble',layer:'Burbujas',x:b.x+Math.sin(time*.5+b.phase)*.7,z:b.z+Math.cos(time*.3+b.phase)*.4,y:b.y+age*.19,w:b.radius*2,h:b.radius*2,alpha:Math.max(0,fade)*.7,hue:b.hue,phase:0}})}
+function drawBubble(base,p,o){const r=Math.min(54,Math.max(2,o.w*F/p.z/2)),x=base.x,y=base.y-r;if(x+r<0||x-r>W||y+r<0||y-r>H)return;ctx.save();ctx.globalAlpha=o.alpha;const g=ctx.createRadialGradient(x-r*.3,y-r*.35,r*.1,x,y,r);g.addColorStop(0,`hsla(${o.hue},100%,90%,.35)`);g.addColorStop(.55,`hsla(${o.hue},90%,65%,.04)`);g.addColorStop(.88,`hsla(${o.hue},100%,70%,.2)`);g.addColorStop(1,`hsla(${o.hue},100%,80%,.85)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle=`hsla(${o.hue},100%,82%,.85)`;ctx.lineWidth=Math.max(1,r*.045);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=Math.max(1,r*.1);ctx.beginPath();ctx.arc(x-r*.07,y-r*.05,r*.72,Math.PI*1.07,Math.PI*1.52);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.85)';ctx.beginPath();ctx.arc(x+r*.35,y+r*.3,Math.max(1,r*.07),0,Math.PI*2);ctx.fill();ctx.restore()}
+function cameraPoint(x,y,z){let dx=x-cam.x,dz=z-cam.z,c=Math.cos(cam.yaw),s=Math.sin(cam.yaw);return {x:dx*c-dz*s,y:y-cam.y,z:-dx*s-dz*c}}function screen(v){return {x:W/2+v.x*F/v.z,y:H*(.48+cam.pitch)-v.y*F/v.z}}
+function drawWaterfallMotion(x,y,w,h,phase){if(!animate)return;ctx.save();ctx.beginPath();ctx.rect(x,y-h,w,h);ctx.clip();const streams=[[.205,.15,.105,.59],[.365,.26,.105,.52],[.645,.47,.105,.34],[.485,.72,.09,.19]];for(let si=0;si<streams.length;si++){const [nx,ny,nw,nh]=streams[si],sx=x-w/2+nx*w,sy=y-h+ny*h,sw=nw*w,sh=nh*h;ctx.save();ctx.beginPath();ctx.rect(sx,sy,sw,sh);ctx.clip();for(let j=0;j<11;j++){const px=sx+((j*0.61803398875+phase*.037+time*(.035+si*.006))%1)*sw;const py=sy+((j*.173+time*(.42+si*.09)+phase*.13)%1)*sh;const len=Math.max(3,h*(.018+(j%3)*.006));ctx.globalAlpha=.10+(j%4)*.035;ctx.strokeStyle=j%3===0?'#eaffff':'#74f7ff';ctx.lineWidth=Math.max(.6,w*.0035);ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-w*.003,Math.min(sy+sh,py+len));ctx.stroke()}ctx.restore()}ctx.restore();ctx.globalAlpha=1}
+function drawLakeShimmer(){if(!animate||!layers.Agua)return;ctx.save();for(let i=0;i<34;i++){const phase=i*2.39996,rx=Math.sin(phase)*18,rz=Math.cos(phase)*16,wx=-29+rx, wz=-14+rz;const p=cameraPoint(wx,.16+Math.sin(time*1.7+phase)*.015,wz);if(p.z<.5)continue;const q=screen(p),size=Math.max(1,Math.min(18,F/p.z*(.12+(i%4)*.055)));const pulse=.22+.22*(.5+.5*Math.sin(time*2.1+phase));ctx.globalAlpha=pulse;ctx.strokeStyle=i%4===0?'#e6ffff':'#6af7f4';ctx.lineWidth=Math.max(.6,size*.09);ctx.beginPath();ctx.ellipse(q.x+Math.sin(time+phase)*size*.5,q.y,size*(1.1+(i%3)*.4),Math.max(.5,size*.18),0,0,Math.PI*2);ctx.stroke()}ctx.restore();ctx.globalAlpha=1}
+
+const shipImg=new Image(),shipDark=document.createElement('canvas');
+shipImg.onload=()=>{shipDark.width=shipImg.width;shipDark.height=shipImg.height;const g=shipDark.getContext('2d');g.drawImage(shipImg,0,0);g.globalCompositeOperation='source-in';g.fillStyle='#04202e';g.fillRect(0,0,shipDark.width,shipDark.height)};
+shipImg.src="assets/ship.webp";
+// Motores (turbinas con galaxia) en unidades de la nave: x, y, radio.
+const shipPorts=[[.3,1.8,11.9],[-23.7,20.6,9.4],[22.7,20.6,9.4],[.3,29,7.6]];
+function drawShip(){
+ const L=shipLayout(),sc=L.sc,roll=shipBank+popFx.kick,thr=Math.min(1,tourSpeed/2.2),bob=Math.sin(time*1.7)*3*sc+popFx.kickY*sc;
+ ctx.save();ctx.translate(L.x,L.y+bob);ctx.rotate(roll);ctx.scale(sc*(1-Math.abs(roll)*.16),sc*(1-.04*thr));
+ // Halo suave y sombra para que destaque sobre el paisaje.
+ const glow=ctx.createRadialGradient(0,0,10,0,0,110);glow.addColorStop(0,'rgba(150,200,255,.28)');glow.addColorStop(1,'rgba(150,200,255,0)');
+ ctx.fillStyle=glow;ctx.beginPath();ctx.ellipse(0,4,140,60,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='rgba(4,20,28,.28)';ctx.beginPath();ctx.ellipse(0,52,70,9,0,0,Math.PI*2);ctx.fill();
+ if(shipImg.complete&&shipImg.naturalWidth){
+  const w=205,h=w*shipImg.naturalHeight/shipImg.naturalWidth;
+  // Nave ilustrada con un fino brillo en el borde.
+  ctx.shadowColor='rgba(200,255,245,.85)';ctx.shadowBlur=9;ctx.drawImage(shipImg,-w/2,-h/2,w,h);ctx.shadowBlur=0;ctx.shadowColor='transparent';
+  // El ala que baja al girar se oscurece (efecto de inclinación).
+  const shade=Math.min(.38,Math.abs(roll)*1.3);
+  if(shade>.02&&shipDark.width){ctx.save();ctx.beginPath();if(roll<0)ctx.rect(-w/2,-h,w/2,2*h);else ctx.rect(0,-h,w/2,2*h);ctx.clip();ctx.globalAlpha=shade;ctx.drawImage(shipDark,-w/2,-h/2,w,h);ctx.restore()}
+  // Las turbinas brillan más cuanto más rápido vuela.
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  for(const [px,py,pr] of shipPorts){const f=1+.9*thr+Math.sin(time*30+px)*.06,rg=ctx.createRadialGradient(px,py,0,px,py,pr*1.7*f);rg.addColorStop(0,`rgba(255,235,170,${.05+.28*thr})`);rg.addColorStop(.45,`rgba(110,190,255,${.04+.16*thr})`);rg.addColorStop(1,'rgba(110,190,255,0)');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(px,py,pr*1.7*f,0,Math.PI*2);ctx.fill()}
+  ctx.restore();
+ }
+ ctx.restore();
+}
+
+function drawForestMist(){if(!animate)return;ctx.save();ctx.globalCompositeOperation='screen';for(let i=0;i<5;i++){const drift=(time*(5+i*2)+i*W*.23)%(W+420)-210,y=H*(.48+i*.105)+Math.sin(time*.18+i*1.7)*H*.025,rx=W*(.24+i*.055),ry=H*(.055+i*.018);const g=ctx.createRadialGradient(drift,y,ry*.08,drift,y,rx);g.addColorStop(0,`rgba(190,235,224,${.045+i*.006})`);g.addColorStop(.48,`rgba(150,205,199,${.025+i*.004})`);g.addColorStop(1,'rgba(150,205,199,0)');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(drift,y,rx,ry,0,0,Math.PI*2);ctx.fill()}ctx.restore();ctx.globalCompositeOperation='source-over'}
+function pads0(n){return ['bird','cliff','crystal','felino','felino-espalda','mountain','plant','ship','sky','soil','sprite','trail-earth','tree-gold','tree-old','tree','vine','horizon-lake'].includes(n)}
+// Margen transparente inferior de cada ilustración (se mide una vez): el dibujo se apoya en el suelo por su borde visible, no por el del archivo.
+const BOTTOM_PAD={"flower-blue":0.0498,"flower-purple":0.0553,"lake":0.1048,"planet":0.0553,"platform":0.1148,"rock":0.1169,"sprite":0.1992};   // margen transparente inferior medido de cada ilustración
+const _pad={};function bottomPad(n){if(n in _pad)return _pad[n];if(n.startsWith('crystal-'))return _pad[n]=BOTTOM_PAD.crystal||0;if(n in BOTTOM_PAD||pads0(n))return _pad[n]=BOTTOM_PAD[n]||0;let r=0;try{const im=images[n],c=document.createElement('canvas'),cw=48,ch=Math.max(8,Math.round(48*im.height/im.width));c.width=cw;c.height=ch;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(im,0,0,cw,ch);const d=g.getImageData(0,0,cw,ch).data;let row=ch-1;for(;row>=0;row--){let a=0;for(let x=0;x<cw;x++)a=Math.max(a,d[(row*cw+x)*4+3]);if(a>40)break}r=(ch-1-row)/ch}catch(e){}if(r<.04||n==='sprite'||n==='bird')r=0;return _pad[n]=r}
+// Aparición y desaparición progresivas (cerca, lejos y en el borde del alcance), nunca de golpe.
+function softFade(o,p){let a=1;if(p.z<3)a*=Math.max(0,(p.z-.5)/2.5);const far=o.layer==='Plantas'?115:o.layer==='Lianas'?150:0;if(far&&p.z>far-20)a*=Math.max(0,(far-p.z)/20);if(o.layer!=='Montañas'&&o.layer!=='Planeta'){const d=Math.hypot(o.x-cam.x,o.z-cam.z);if(d>195)a*=Math.max(0,(230-d)/35)}return a}
+function drawBillboard(o){const p=cameraPoint(o.x,o.y,o.z);if(p.z<.5 || (o.layer==='Plantas' && p.z>115) || (o.layer==='Lianas' && p.z>150))return;const fadeA=o.n==='bubble'?1:softFade(o,p);if(fadeA<=.01)return;const pad=o.n==='bubble'||o.cat||o.n==='bird'?0:bottomPad(o.n),base=screen(p);if(o.n==='bubble'){drawBubble(base,p,o);return}const w=o.w*F/p.z,h=o.h*F/p.z;base.y+=pad*h;if(base.x+w/2<0||base.x-w/2>W||base.y<0||base.y-h>H)return;if(o.n==='bird'){drawBird(o,base,p,w,h);return}if(o.cat){drawCat(o,base,w,h);return}const sway=(o.layer==='Plantas'||o.layer==='Lianas')?Math.sin(time*.8+o.phase)*w*.012:0;if(o.layer==='Árboles'&&o.n!=='tree-gold'){const groundBase=screen(cameraPoint(o.x,0,o.z)),sx=groundBase.x+sway,sy=groundBase.y,rx=Math.max(1,w*.21),ry=Math.max(1,h*.026);ctx.save();ctx.globalAlpha=.24;ctx.fillStyle='#071b19';ctx.beginPath();ctx.ellipse(sx,sy-ry*.2,rx,ry,0,0,Math.PI*2);ctx.fill();ctx.restore()}ctx.globalAlpha=(o.layer==='Montañas'?.75:1)*fadeA;const flip=o.n==='sprite'?o.facing<0:o.phase>3.14&&o.n!=='tree-gold'&&o.n!=='cliff';if(flip){ctx.save();ctx.translate(base.x+sway,0);ctx.scale(-1,1);ctx.drawImage(images[o.n],-w/2,base.y-h,w,h);ctx.restore()}else ctx.drawImage(images[o.n],base.x-w/2+sway,base.y-h,w,h);if(o.n==='cliff')drawWaterfallMotion(base.x+sway,base.y,w,h,o.phase);ctx.globalAlpha=1}
+// Clip textured ground polygons at the camera plane, preserving UV coordinates.
+// Plano más cercano que aún se ve en pantalla: lo que queda por debajo del borde inferior no se dibuja.
+function groundNearZ(y){const below=H-H*(.48+cam.pitch)+60;return Math.max(.6,(cam.y-y)*F/Math.max(below,40))}
+// Las baldosas se dibujan con transformación afín (sin perspectiva). Para que no se deformen ni "se estiren",
+// las que quedan cerca de la cámara se subdividen en trozos pequeños y se recortan al área visible.
+function groundTile(name,x,z,width,depth,y=.03,u0=0,v0=0,u1=1,v1=1,angle=0,lvl=0){
+ const im=images[name],ca=Math.cos(angle),sa=Math.sin(angle),zNear=groundNearZ(y);
+ const poly=[[-1,-1,0,0],[1,-1,1,0],[1,1,1,1],[-1,1,0,1]].map(([sx,sz,u,v])=>{const dx=sx*width/2,dz=sz*depth/2;return {...cameraPoint(x+dx*ca+dz*sa,y,z-dx*sa+dz*ca),u:(u0+u*(u1-u0))*im.width,v:(v0+v*(v1-v0))*im.height}});
+ let zmin=Infinity,zmax=-Infinity;for(const c of poly){if(c.z<zmin)zmin=c.z;if(c.z>zmax)zmax=c.z}
+ if(zmax<zNear)return;
+ if(lvl<4&&Math.max(zmin,zNear)*1.3<zmax){const hw=width/2,hd=depth/2,um=(u0+u1)/2,vm=(v0+v1)/2;
+  for(const [sx,sz] of [[-1,-1],[1,-1],[-1,1],[1,1]])groundTile(name,x+sx*hw/2*ca+sz*hd/2*sa,z-sx*hw/2*sa+sz*hd/2*ca,hw,hd,y,sx<0?u0:um,sz<0?v0:vm,sx<0?um:u1,sz<0?vm:v1,angle,lvl+1);
+  return}
+ const out=[];for(let i=0;i<poly.length;i++){const a=poly[i],b=poly[(i+1)%poly.length],ia=a.z>zNear,ib=b.z>zNear;if(ia)out.push(a);if(ia!==ib){const t=(zNear-a.z)/(b.z-a.z),n={};for(const k of ['x','y','z','u','v'])n[k]=a[k]+(b[k]-a[k])*t;out.push(n)}}
+ if(out.length<3)return;const verts=out.map(v=>({...screen(v),u:v.u,v:v.v}));for(let i=1;i<verts.length-1;i++)tri(im,verts[0],verts[i],verts[i+1])
+}
+function ground(name,x,z,width,depth,y=.03){const nx=8,nz=20;for(let iz=0;iz<nz;iz++)for(let ix=0;ix<nx;ix++)groundTile(name,x-width/2+(ix+.5)*width/nx,z-depth/2+(iz+.5)*depth/nz,width/nx,depth/nz,y,ix/nx,iz/nz,(ix+1)/nx,(iz+1)/nz)}
+function tri(im,a,b,c){const den=a.u*(b.v-c.v)+b.u*(c.v-a.v)+c.u*(a.v-b.v);if(Math.abs(den)<.001)return;const m1=(a.x*(b.v-c.v)+b.x*(c.v-a.v)+c.x*(a.v-b.v))/den,m3=(a.x*(c.u-b.u)+b.x*(a.u-c.u)+c.x*(b.u-a.u))/den,m5=(a.x*(b.u*c.v-c.u*b.v)+b.x*(c.u*a.v-a.u*c.v)+c.x*(a.u*b.v-b.u*a.v))/den,m2=(a.y*(b.v-c.v)+b.y*(c.v-a.v)+c.y*(a.v-b.v))/den,m4=(a.y*(c.u-b.u)+b.y*(a.u-c.u)+c.y*(b.u-a.u))/den,m6=(a.y*(b.u*c.v-c.u*b.v)+b.y*(c.u*a.v-a.u*c.v)+c.y*(a.u*b.v-b.u*a.v))/den;ctx.save();ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.closePath();ctx.clip();ctx.setTransform(m1,m2,m3,m4,m5,m6);ctx.drawImage(im,0,0);ctx.restore()}
+function move(f,r,dt){const speed=(keys.ShiftLeft?12:6)*dt,norm=Math.max(1,Math.hypot(f,r));const dx=(-Math.sin(cam.yaw)*f+Math.cos(cam.yaw)*r)*speed/norm,dz=(-Math.cos(cam.yaw)*f-Math.sin(cam.yaw)*r)*speed/norm,steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.25));for(let i=0;i<steps;i++){const next=confineToPath(cam.x+dx/steps,cam.z+dz/steps);cam.x=next.x;cam.z=next.z;if(next.blocked)boundaryUntil=performance.now()+900}cam.y=FLY_H}
+addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;if(e.code.startsWith('Arrow'))e.preventDefault();keys[e.code]=true});addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false;drag=walkMouse=false});canvas.onpointerdown=e=>{drag=true;mouseStart=performance.now();mouseX=e.clientX;mouseY=e.clientY;canvas.setPointerCapture(e.pointerId)};canvas.onpointermove=e=>{if(!drag)return;const dx=e.clientX-mouseX,dy=e.clientY-mouseY;cam.yaw-=dx*.004;cam.pitch=Math.max(-.35,Math.min(.35,cam.pitch+dy*.0012));mouseX=e.clientX;mouseY=e.clientY};canvas.onpointerup=canvas.onpointercancel=()=>drag=walkMouse=false;canvas.oncontextmenu=e=>e.preventDefault();canvas.onwheel=e=>{e.preventDefault();if(travelMode==='manual')move(-Math.sign(e.deltaY),0,.65) };
+for(const b of document.querySelectorAll('[data-key]')){b.onpointerdown=e=>{keys[b.dataset.key]=true;b.setPointerCapture(e.pointerId)};b.onpointerup=b.onpointercancel=()=>keys[b.dataset.key]=false}
+document.querySelector('#reset').style.display='none';document.querySelector('#start-manual').addEventListener('click',()=>document.querySelector('#reset').style.display='inline-block');document.querySelector('#motion').onclick=e=>{animate=!animate;e.target.textContent='Animación: '+(animate?'sí':'no')};document.querySelector('#full').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()};document.querySelector('#reset').onclick=()=>{cam.x=0;cam.z=46;cam.y=FLY_H;cam.yaw=0;cam.pitch=0;flybys=[];nextFlyby=time+.1;birds.length=0;for(let i=0;i<4;i++)spawnBirdFlock(true);for(let i=0;i<bubbles.length;i++)bubbles[i]=spawnBubble(true);for(const k in keys)keys[k]=false;drag=walkMouse=false};
+const motes=Array.from({length:90},()=>({x:(rand()-.5)*140,z:(rand()-.5)*150,y:rand()*7,phase:rand()*6.28}));let last=performance.now();let perfAcc=0,perfN=0;function frame(now){if(gameClosed)return;requestAnimationFrame(frame);const rawDt=Math.min((now-last)/1000,.1),dt=Math.min(rawDt,.04);last=now;perfAcc+=rawDt;if(++perfN>=100){const avg=perfAcc/perfN;perfAcc=perfN=0;if(avg>.036&&quality>.5){quality=Math.max(.5,quality*.84);resize()}}if(animate)time+=dt;walkMouse=travelMode==='manual'&&drag&&now-mouseStart>280;updateTour(tourDt(rawDt));let f=travelMode==='manual'?((keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)+(walkMouse?1:0)):0,r=travelMode==='manual'?((keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)):0;if(travelMode==='manual'&&keys.KeyQ)cam.yaw+=dt*1.4;if(travelMode==='manual'&&keys.KeyE)cam.yaw-=dt*1.4;if(travelMode==='manual')move(Math.min(1,f),r,dt);const horizon=H*(.48+cam.pitch);ctx.drawImage(images.sky,0,0,W,H);const grd=ctx.createLinearGradient(0,horizon,0,H);grd.addColorStop(0,'#698b7d');grd.addColorStop(.45,'#345453');grd.addColorStop(1,'#16363d');ctx.fillStyle=grd;ctx.fillRect(0,horizon,W,H-horizon);const guests=updateFlyby().concat(updateBirds(),updateCats());const visible=objects.concat(guests,updateBubbles()).filter(o=>layers[o.layer] && !(o.z<-63&&o.z>-84&&Math.abs(o.x)<24&&o.n!=='tree-gold'&&o.n!=='platform'&&(o.layer==='Cristales'||o.layer==='Plantas'||o.layer==='Rocas'||o.layer==='Lianas'||o.layer==='Árboles')) && (Math.hypot(o.x-cam.x,o.z-cam.z)<230||o.layer==='Montañas'||o.layer==='Planeta'||o.n==='tree-gold')).map(o=>({o,d:(o.n==='tree-gold'||o.n==='platform'?Math.hypot(o.x-cam.x,o.z-cam.z)+(o.n==='platform'?2:0):cameraPoint(o.x,o.y,o.z).z)+(o.bias||0)})).sort((a,b)=>b.d-a.d);for(const a of visible)if(a.o.layer==='Montañas'||a.o.layer==='Planeta')drawBillboard(a.o);
+// El lago del horizonte: un mar plano que se extiende hasta el horizonte, con la misma perspectiva que el suelo.
+// Se reparte en baldosas del mundo (alternando espejo para que no se noten las juntas) y queda bajo el musgo, que se funde con él a lo lejos.
+{const im=images['horizon-lake'];if(im){const TW=360,TD=TW*im.height/im.width,rx0=Math.floor(cam.x/TW),rz0=Math.floor(cam.z/TD),seaTiles=[];
+for(let iz=rz0-9;iz<=rz0+9;iz++)for(let ix=rx0-6;ix<=rx0+6;ix++){const x=(ix+.5)*TW,z=(iz+.5)*TD,pc=cameraPoint(x,0,z);const half=Math.max(TW,TD)*.75;if(pc.z+half<95||pc.z-half>2600)continue;if(Math.abs(pc.x)-half>Math.max(pc.z,1)*W/F*.7+half)continue;seaTiles.push({x,z,ix,iz,d:pc.z})}
+seaTiles.sort((a,b)=>b.d-a.d);for(const t of seaTiles){const fx=t.ix&1,fz=t.iz&1;groundTile('horizon-lake',t.x,t.z,TW+.2,TD+.2,-.06,fx?1:0,fz?1:0,fx?0:1,fz?0:1)}
+const hz=H*(.48+cam.pitch),hg=ctx.createLinearGradient(0,hz-2,0,hz+H*.13);hg.addColorStop(0,'rgba(160,178,214,.55)');hg.addColorStop(.35,'rgba(120,140,190,.22)');hg.addColorStop(1,'rgba(120,140,190,0)');ctx.fillStyle=hg;ctx.fillRect(0,hz-2,W,H*.13+2)}}
+// A continuous world-space moss/earth texture extends beyond the entire walking area.
+const tileSize=14,rx=Math.floor(cam.x/tileSize),rz=Math.floor(cam.z/tileSize),tiles=[];
+for(let iz=rz-10;iz<=rz+10;iz++)for(let ix=rx-10;ix<=rx+10;ix++){const x=(ix+.5)*tileSize,z=(iz+.5)*tileSize,p=cameraPoint(x,0,z);if(p.z< -tileSize || p.z>145 || Math.abs(p.x)>p.z*W/F*.65+tileSize)continue;tiles.push({x,z,d:p.z})}
+tiles.sort((a,b)=>b.d-a.d);for(const t of tiles){ctx.globalAlpha=Math.max(0,Math.min(1,(150-t.d)/50));if(ctx.globalAlpha<=.01)continue;for(let j=0;j<2;j++)for(let i=0;i<2;i++)groundTile('soil',t.x+(i-.5)*tileSize/2,t.z+(j-.5)*tileSize/2,tileSize/2+.025,tileSize/2+.025,0,i/2,j/2,(i+1)/2,(j+1)/2)}ctx.globalAlpha=1;
+// Independent illustrated water and trail surfaces lie horizontally in the world.
+const patches=earthPatches.map(t=>({t,p:cameraPoint(t.x,0,t.z)})).filter(({p})=>p.z> -5&&p.z<135&&Math.abs(p.x)<p.z*W/F*.7+7).sort((a,b)=>b.p.z-a.p.z);
+for(const {t,p}of patches){ctx.globalAlpha=t.a||1;const n=p.z<18?4:2;for(let j=0;j<n;j++)for(let i=0;i<n;i++){const dx=((i+.5)/n-.5)*t.size,dz=((j+.5)/n-.5)*t.size,c=Math.cos(t.angle),sn=Math.sin(t.angle);groundTile('trail-earth',t.x+dx*c+dz*sn,t.z-dx*sn+dz*c,t.size/n,t.size/n,.065,i/n,j/n,(i+1)/n,(j+1)/n,t.angle)}}
+
+// La laguna se pinta después del musgo y de la tierra: nada tapa su orilla y se ve entera desde cualquier giro.
+ctx.globalAlpha=1;if(layers.Agua){ground('lake',-29,-14,45+Math.sin(time*.7)*.12,42,.04);drawLakeShimmer()}
+ctx.globalAlpha=1;for(const a of visible)if(a.o.layer!=='Montañas'&&a.o.layer!=='Planeta')drawBillboard(a.o);drawForestMist();if(animate){for(const m of motes){const p=cameraPoint(m.x,m.y+Math.sin(time+m.phase)*.4,m.z);if(p.z<1)continue;const s=screen(p),radius=Math.min(4,F*.035/p.z);ctx.globalAlpha=.35+Math.sin(time+m.phase)*.25;ctx.fillStyle='#baffeb';ctx.beginPath();ctx.arc(s.x,s.y,radius,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1}const vignette=ctx.createRadialGradient(W/2,H/2,H*.3,W/2,H/2,W*.72);vignette.addColorStop(0,'#051c2700');vignette.addColorStop(1,'#051c2766');ctx.fillStyle=vignette;ctx.fillRect(0,0,W,H);if(travelMode==='tour'||travelMode==='finishing'||travelMode==='finished')drawShip();drawBubbleFx();document.querySelector('#path-status').textContent=now<boundaryUntil?'Borde del camino · sigue el sendero':segments.filter(({a,b})=>Math.hypot(a[0]-cam.x,a[1]-cam.z)<7||Math.hypot(b[0]-cam.x,b[1]-cam.z)<7).length>2?'Bifurcación · elige por dónde continuar':'Recorre el sendero · puedes volver sobre tus pasos';document.querySelector('#where').textContent=Math.hypot(cam.x+29,cam.z+14)<32?'Laguna turquesa':Math.hypot(cam.x-32,cam.z+22)<28?'Jardín de cristales':Math.hypot(cam.x,cam.z+66)<33?'Claro del árbol':'Senderos del bosque'}requestAnimationFrame(frame);
+
+})().catch(error=>{console.error(error);const status=document.getElementById("progress");if(status)status.textContent=(error&&error.userMessage)||"No se pudo iniciar. Abre el archivo en un navegador actualizado.";});</script></html>
